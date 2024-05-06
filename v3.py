@@ -10,14 +10,14 @@ from transformers import BertTokenizer, BertModel
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Load the CSV file
-data = pd.read_csv('requests.csv')
+data = pd.read_csv('./dataset/requests.csv')
 
 # Preprocessing
 data['label'] = data['Class'].apply(lambda x: 1 if x == 'Valid' else 0)
 data.drop(['Class'], axis=1, inplace=True)
 
 # Handle missing or NaN values in 'POST-Data' column
-data['POST-Data'].fillna('', inplace=True)
+data['POST-Data'] = data['POST-Data'].fillna('')
 
 # Tokenization
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
@@ -47,8 +47,8 @@ train_inputs, val_inputs, train_labels, val_labels = train_test_split(
     random_state=42
 )
 
-train_inputs = [(torch.tensor(x[0]), torch.tensor(x[1])) for x in train_inputs]
-val_inputs = [(torch.tensor(x[0]), torch.tensor(x[1])) for x in val_inputs]
+train_inputs = [(x[0].clone().detach(), x[1].clone().detach()) for x in train_inputs]
+val_inputs = [(x[0].clone().detach(), x[1].clone().detach()) for x in val_inputs]
 
 # Define the model
 class BertClassifier(nn.Module):
