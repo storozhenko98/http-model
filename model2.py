@@ -81,10 +81,11 @@ for epoch in range(num_epochs):
         loss = outputs.loss
         loss.backward()
         optimizer.step()
-        
-        train_loss += loss.item()
         num_trained += 1
         print(f"Training progress: {num_trained}/{num_of_batches}", end='\r')
+        
+        train_loss += loss.item()
+        
     
     train_loss /= len(train_loader)
     
